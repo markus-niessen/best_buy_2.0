@@ -58,9 +58,13 @@ def start(store_obj):
                     print("Error adding product!\n")
 
             if shopping_list:
-                total_price = store_obj.order(shopping_list)
-                print("********")
-                print(f"Order made! Total payment: ${total_price}")
+                try:
+                    total_price = store_obj.order(shopping_list)
+                    print("********")
+                    print(f"Order made! Total payment: ${total_price}")
+                except ValueError as error:
+                    print("********")
+                    print(f"Order failed: {error}")
 
         elif choice == "4":
             break
@@ -76,7 +80,12 @@ def main():
         products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
         products.Product("Google Pixel 7", price=500, quantity=250),
         products.NonStockedProduct("Windows License", price=125),
-        products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+        products.LimitedProduct(
+            "Shipping",
+            price=10,
+            quantity=250,
+            maximum=1
+        )
     ]
 
     second_half_price = promotions.SecondHalfPrice("Second Half price!")
