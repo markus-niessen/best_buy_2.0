@@ -21,7 +21,7 @@ def start(store_obj):
         if choice == "1":
             print("------")
             for index, product in enumerate(store_obj.get_all_products(), start=1):
-                print(f"{index}. {product.show()}")
+                print(f"{index}. {product}")
             print("------")
 
         elif choice == "2":
@@ -33,7 +33,7 @@ def start(store_obj):
 
             print("------")
             for index, product in enumerate(all_products, start=1):
-                print(f"{index}. {product.show()}")
+                print(f"{index}. {product}")
             print("------")
             print("When you want to finish order, enter empty text.")
 
