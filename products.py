@@ -19,6 +19,13 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = quantity > 0
+        self.promotion = None
+
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
 
     def get_quantity(self):
         """Return the current quantity of the product."""
@@ -34,7 +41,7 @@ class Product:
         if self.quantity == 0:
             self.deactivate()
         else:
-            self.activate
+            self.activate()
 
 
     def is_active(self):
@@ -51,26 +58,34 @@ class Product:
 
     def show(self):
         """Return a formatted string describing the product."""
+        if self.promotion:
+            return (
+                f"{self.name}, Price: {self.price}, "
+                f"Quantity: {self.quantity}, Promotion: {self.promotion.name}"
+            )
+
         return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity):
-        """Purchase a quantity of the product and return the total price."""
         if quantity <= 0:
             raise ValueError("Purchase quantity must be greater than 0")
 
         if quantity > self.quantity:
-            raise ValueError("Not enough items in stock")
+            raise ValueError("Not enough stock")
 
         self.quantity -= quantity
 
         if self.quantity == 0:
             self.deactivate()
 
-        return quantity * self.price
+        if self.promotion:
+            return self.promotion.apply_promotion(self, quantity)
+
+        return self.price * quantity
 
 
 class NonStockedProduct(Product):
-    """Represents a product with unlimites stock"""
+    """Represents a product with unlimited stock"""
 
     def __init__(self, name, price):
         super().__init__(name, price, quantity=0)
@@ -80,9 +95,18 @@ class NonStockedProduct(Product):
         if quantity <= 0:
             raise ValueError("Purchase quantity must be greater than 0")
 
+        if self.promotion:
+            return self.promotion.apply_promotion(self, quantity)
+
         return quantity * self.price
 
     def show(self):
+        if self.promotion:
+            return (
+                f"{self.name}, Price: {self.price}, "
+                f"Quantity: Unlimited, Promotion: {self.promotion.name}"
+            )
+
         return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
 
 
@@ -102,5 +126,14 @@ class LimitedProduct(Product):
         return super().buy(quantity)
 
     def show(self):
-        return (f"{self.name}, Price: {self.price}, "
-                f"Quantity: {self.quantity}, Maximum: {self.maximum}")
+        if self.promotion:
+            return (
+                f"{self.name}, Price: {self.price}, "
+                f"Quantity: {self.quantity}, Maximum: {self.maximum}, "
+                f"Promotion: {self.promotion.name}"
+            )
+
+        return (
+            f"{self.name}, Price: {self.price}, "
+            f"Quantity: {self.quantity}, Maximum: {self.maximum}"
+        )
