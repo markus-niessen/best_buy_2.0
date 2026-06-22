@@ -40,6 +40,9 @@ class Store:
         total_price = 0
 
         for product, quantity in shopping_list:
-            total_price += product.buy(quantity)
+            try:
+                total_price += product.buy(quantity)
+            except ValueError as error:
+                print(f"Error while buying product: {error}")
 
         return total_price

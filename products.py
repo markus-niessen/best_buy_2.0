@@ -18,7 +18,7 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
-        self.active = True
+        self.active = quantity > 0
 
     def get_quantity(self):
         """Return the current quantity of the product."""
@@ -33,6 +33,9 @@ class Product:
 
         if self.quantity == 0:
             self.deactivate()
+        else:
+            self.activate
+
 
     def is_active(self):
         """Return whether the product is active."""
@@ -64,3 +67,40 @@ class Product:
             self.deactivate()
 
         return quantity * self.price
+
+
+class NonStockedProduct(Product):
+    """Represents a product with unlimites stock"""
+
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=0)
+        self.activate()
+
+    def buy(self, quantity):
+        if quantity <= 0:
+            raise ValueError("Purchase quantity must be greater than 0")
+
+        return quantity * self.price
+
+    def show(self):
+        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+
+
+class LimitedProduct(Product):
+    """Represents a product with a maximum purchase limit"""
+
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity):
+        if quantity > self.maximum:
+            raise ValueError(
+                f"Cannot buy more than {self.maximum} items of this product"
+            )
+
+        return super().buy(quantity)
+
+    def show(self):
+        return (f"{self.name}, Price: {self.price}, "
+                f"Quantity: {self.quantity}, Maximum: {self.maximum}")
